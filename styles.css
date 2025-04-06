@@ -1,0 +1,71 @@
+/* Base setup with background image and overlay */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+   background: url('https://free-images.com/lg/fd77/wildfire_forest_fire_blaze_1.jpg') no-repeat center center fixed;
+    background-size: cover;
+    filter: brightness(0.4); /* Muting effect */
+    z-index: -2;
+  }
+
+  /* Optional darker overlay (can adjust opacity or remove if too much) */
+ 
+
+  /* Container styling */
+  .container {
+    background-color: rgba(255, 253, 230, 0.95); 
+    padding: 60px 80px;
+    border-radius: 24px;
+    text-align: center;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    max-width: 500px;
+    width: 90%;
+    color: #333;
+  }
+
+  /* Button styling */
+  #checkDanger {
+    padding: 16px 32px;
+    font-size: 18px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+    background-color: #e74c3c;
+    color: white;
+    transition: background-color 0.3s ease;
+  }
+
+  #checkDanger:hover {
+    background-color: #c0392b;
+  }
+
+  /* Result text */
+  #result {
+    margin-top: 30px;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  /* Color-coded classes */
+  .low { color: #2ecc71; }         
+  .moderate { color: #f1c40f; }    
+  .high { color: #e67e22; }        
+  .very-high { color: #e74c3c; }   
+  .extreme { color: #8e44ad; }     
