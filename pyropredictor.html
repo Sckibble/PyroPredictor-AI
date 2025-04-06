@@ -65,7 +65,7 @@
 
             async function fetchAndPredictVisualCrossing() {
                 try {
-                    const response = await fetch('https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/los%20angeles/today+6days?unitGroup=us&include=days&key=3DAZML9PJ9STXC6VMGBYDMDGW&contentType=json');
+                    const response = await fetch('https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/los%20angeles/next7days?unitGroup=us&include=days&key=3DAZML9PJ9STXC6VMGBYDMDGW&contentType=json');
                     const data = await response.json();
 
                     const days = data.days.slice(0, 7); // Get next 7 days
