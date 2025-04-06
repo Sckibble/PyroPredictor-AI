@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pyro Predictor - Ember Realm</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css"> <!-- Link to your external CSS file -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+
+</head>
+<body>
+<br>
+<br>
+<div id="header-container"></div>
+    <h1>Run Pyro Predictor</h1>
+        <button onclick="fetchWeatherAndPredict()">Predict</button>
+            <p id="result">Waiting for prediction</p>
+            <script>
+                let model;
+                let scalerStats;
+                const labels = ['Low', 'Moderate', 'High', 'Very High', 'Extreme'];
+
+                async function loadEverything() {
+                    try {
+                        console.log("Loading model :)");
+                        model = await tf.loadGraphModel('model.json');
+                        console.log("Model loaded, loading scaler");
+                        const res = await fetch('scaler_stats.json');
+                        scalerStats = await res.json();
+                        console.log("Model and scaler loaded.");
+                    } catch (e) {
+                        console.error("Failed to load model or scaler:", e);
+                    }
+                }
+
+
+                function normalizeInput(inputArray, mins, maxs) {
+                    return inputArray.map((val, i) => {
+                        return (val - mins[i]) / (maxs[i] - mins[i]);
+                    });
+                }
+            
+                async function predictFireDanger(input) {
+                    if (!model || !scalerStats) {
+                        alert("Model or scaler not loaded yet!");
+                        return;
+                    }
+            
+                    const normInput = normalizeInput(input, scalerStats.mins, scalerStats.maxs);
+                    const inputTensor = tf.tensor2d([normInput]); // shape [1, 9]
+                    const prediction = model.predict(inputTensor);
+                    const result = prediction.argMax(-1); // get index of highest probability
+                    const predictedClass = (await result.data())[0]; // value 0-4
+                    return predictedClass;
+                }
+            
+                async function runPrediction() {
+                    const exampleInput = [78, 45, 60, 0.1, 30, 20, 15, 800, 3];  // Example data
+                    const predictedClass = await predictFireDanger(exampleInput);
+                    if (predictedClass !== undefined) {
+                        document.getElementById("result").innerText =
+                            `Predicted Fire Danger Level: ${labels[predictedClass]}`;
+                    }
+                }
+                async function fetchWeatherAndPredict() {
+                    try {
+                        const response = await fetch('https://api.weather.gov/gridpoints/LOX/145,47/forecast/hourly');
+                        const data = await response.json();
+    
+                        const period = data.properties.periods[0]; // Get the current/next hour forecast
+    
+                        // Extract features (some conversion may be necessary)
+                        const temp = (period.temperature);  // NOAA returns F
+                        const dewpointC = period.dewpoint.value !== null ? period.dewpoint.value : 0;
+                        const dewp = (dewpointC * 1.8 + 32);    // C to F
+                        const humidity = period.relativeHumidity.value;   // %
+                        const windSpeedStr = period.windSpeed;            // Example: "12 mph"
+                        const windSpeed = parseFloat(windSpeedStr);       // Just the number
+    
+                        // Precip isn't always available — default to 0
+                        const precip = period.probabilityOfPrecipitation?.value || 0;
+    
+                        // Default cover to 0 (could be calculated from skyCover or cloudLayers in other endpoints)
+                        const precipcover = 0;
+    
+                        const season = getSeasonFromMonth(new Date().getMonth() + 1); // JS months are 0-based
+    
+                        const features = [temp, dewp, humidity, precip, precipcover, windSpeed, windSpeed, 0, season];
+    
+                        console.log("Weather features for prediction:", features);
+    
+                        //const normalized = normalizeInput(features);  // <-- you already have this in your script
+                        const predictedClass = await predictFireDanger(features);                // Call your predictor function
+                        if (predictedClass !== undefined) {
+                            document.getElementById("result").innerText =
+                                `Predicted Fire Danger Level: ${labels[predictedClass]}`;
+                        }
+    
+                    } catch (err) {
+                        console.error('Error fetching weather:', err);
+                    }
+                }
+
+                function getSeasonFromMonth(month) {
+                    // 1: Winter, 2: Spring, 3: Summer, 4: Fall (just like your Python logic)
+                    return Math.floor(((month % 12) + 3) / 3);
+                }
+
+                console.log("About to load model");
+                window.addEventListener('load', loadEverything);
+
+            </script>
+        <script src="/loadHeader.js"></script>
+        <script src="/animations.js"></script>
+    </body>
+</html>
