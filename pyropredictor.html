@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pyro Predictor - Ember Realm</title>
+    <title>Pyro Predictor</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../styles.css"> <!-- Link to your external CSS file -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
@@ -12,9 +12,11 @@
 <body>
 <br>
 <br>
-<div id="header-container"></div>
-    <h1>LA Fire Danger Level</h1>
-        <button onclick="fetchAndPredictVisualCrossing()">Predict</button>
+<h1 id="pageTitle">
+    Pyro Predictor
+</h1>
+<div class="container">
+    <button id="checkDangerLevel" onclick="fetchAndPredictVisualCrossing()">Predict</button>
         <h2>7-Day Fire Danger Forecast</h2>
         <div id="forecast-results">
             <p id="result-day-1">Loading day 1...</p>
@@ -25,6 +27,8 @@
             <p id="result-day-6">Loading day 6...</p>
             <p id="result-day-7">Loading day 7...</p>
         </div>
+</div>
+        
         <script>
             let model;
             let scalerStats;
@@ -106,7 +110,7 @@
             console.log("About to load model");
             window.addEventListener('load', loadEverything);
             </script>
-        <script src="/loadHeader.js"></script>
-        <script src="/animations.js"></script>
+        <script src="loadHeader.js"></script>
+        <script src="animations.js"></script>
     </body>
 </html>

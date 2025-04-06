@@ -5,6 +5,7 @@ body {
     font-family: Arial, sans-serif;
     height: 100vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     position: relative;
@@ -18,7 +19,7 @@ body {
     left: 0;
     height: 100%;
     width: 100%;
-   background: url('https://free-images.com/lg/fd77/wildfire_forest_fire_blaze_1.jpg') no-repeat center center fixed;
+   background: url('smokey__the_bear.jpeg') no-repeat center center fixed;
     background-size: cover;
     filter: brightness(0.4); /* Muting effect */
     z-index: -2;
@@ -27,6 +28,15 @@ body {
   /* Optional darker overlay (can adjust opacity or remove if too much) */
  
 
+  /* Title Styling */
+  #pageTitle{
+    font-size: 100px;
+    text-align: center;
+    color: #ffffff;
+    position: absolute;
+    top: 20px;
+    
+  }
   /* Container styling */
   .container {
     background-color: rgba(255, 253, 230, 0.95); 
@@ -40,7 +50,7 @@ body {
   }
 
   /* Button styling */
-  #checkDanger {
+  #checkDangerLevel {
     padding: 16px 32px;
     font-size: 18px;
     border: none;
@@ -50,9 +60,10 @@ body {
     background-color: #e74c3c;
     color: white;
     transition: background-color 0.3s ease;
+    
   }
 
-  #checkDanger:hover {
+  #checkDangerLevel:hover {
     background-color: #c0392b;
   }
 
